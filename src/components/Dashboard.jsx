@@ -1,13 +1,25 @@
 import React, { useState } from 'react'
 import { Card, Button, Alert } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
-  const[error, setError] = useState("");
+  let navigate = useNavigate();
 
-  const { currentUser } = useAuth();
+  const [error, setError] = useState("");
 
-  function handleLogout() {};
+  const { currentUser, logout } = useAuth();
+
+  async function handleLogout() {
+    setError('');
+
+    try {
+      await logout();
+      navigate('/login');
+    } catch {
+      setError('Failed to log out')
+    }
+  };
   return (
     <>
       <Card>
@@ -15,6 +27,7 @@ const Dashboard = () => {
           <h2 className="text-center mb-4">Profile</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           <strong>Email: {currentUser.email}</strong>
+          <Link to="/update-profile" className="btn btn-primary w-100 mt-3">Update Profile</Link>
         </Card.Body>
 
         <div className="w-100 text-center mt-2">
